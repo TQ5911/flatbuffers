@@ -26,8 +26,8 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   // load FlatBuffer schema (.fbs) and JSON from disk
   std::string schemafile;
   std::string jsonfile;
-  bool ok = flatbuffers::LoadFile("samples/monster.fbs", false, &schemafile) &&
-            flatbuffers::LoadFile("samples/monsterdata.json", false, &jsonfile);
+  bool ok = flatbuffers::LoadFile("E:\\Study\\flatbuffers\\build\\Debug\\monster_copy.fbs", false, &schemafile) &&
+            flatbuffers::LoadFile("E:\\Study\\flatbuffers\\build\\Debug\\monsterdata.json", false, &jsonfile);
   if (!ok) {
     printf("couldn't load files!\n");
     return 1;

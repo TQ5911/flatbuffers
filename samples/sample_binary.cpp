@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <fstream>
+#include <iostream>
 #include "monster_generated.h"  // Already includes "flatbuffers/flatbuffers.h".
 
 using namespace MyGame::Sample;
@@ -102,4 +104,41 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   (void)equipped;
 
   printf("The FlatBuffer was successfully created and verified!\n");
+
+
+  // 保存到本地
+  {
+    std::string binaryData((char*)builder.GetBufferPointer(), builder.GetSize());
+    std::ofstream outFile("output1111111.mon");
+
+    // 检查文件是否成功打开
+    if (!outFile.is_open()) {
+      std::cout << "无法打开文件" << std::endl;
+      return 1;
+    }
+    // 写入数据到文件
+    outFile << binaryData;
+    // 关闭文件
+    outFile.close();
+  }
+
+  // 从本地文件中加载
+  {
+    std::ifstream infile;
+    infile.open("output1111111.mon", std::ios::binary | std::ios::in);
+    infile.seekg(0, std::ios::end);
+    int length = infile.tellg();
+    infile.seekg(0, std::ios::beg);
+    char *binaryData = new char[length];
+    infile.read(binaryData, length);
+    infile.close();
+
+    auto monster = GetMonster(binaryData);
+
+    std::cout << "hp : " << monster->hp() << std::endl;  // '80'
+    std::cout << "mana : " << monster->mana()
+              << std::endl;  // default value of '150'
+    std::cout << "name : " << monster->name()->c_str()
+              << std::endl;  // "MyMonster"
+  }
 }
