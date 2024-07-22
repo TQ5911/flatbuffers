@@ -45,15 +45,13 @@ int main(int /*argc*/, const char * /*argv*/[]) {
 
   builder.Finish(orc);  // 序列化对象的根
 
-  // 可以存储在磁盘上或通过网络发送
-
-  // 获取builder.GetSize()字节的builder.GetBufferPointe
-
-  // 相反，我们将立即访问它(就好像我们刚刚收到它一样)。
 
   // builder.GetBufferPointer()是生成二进制数据
+  // 获取builder.GetSize()可以获取器数据字节数
+  // 可以存储在磁盘上或通过网络发送
+
+  // 相反，我们将立即访问它(就好像我们刚刚收到它一样)。
   // GetMonster从二进制数据中生成Monster对象
-  // 获取对根目录的访问权限:
   auto monster = GetMonster(builder.GetBufferPointer());
 
   // 从FlatBuffer获取并测试一些标量类型。
