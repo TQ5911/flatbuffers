@@ -51,6 +51,8 @@ int main(int /*argc*/, const char * /*argv*/[]) {
 
   // 相反，我们将立即访问它(就好像我们刚刚收到它一样)。
 
+  // builder.GetBufferPointer()是生成二进制数据
+  // GetMonster从二进制数据中生成Monster对象
   // 获取对根目录的访问权限:
   auto monster = GetMonster(builder.GetBufferPointer());
 

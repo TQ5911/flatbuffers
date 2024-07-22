@@ -12,7 +12,7 @@ static_assert(FLATBUFFERS_VERSION_MAJOR == 24 &&
               FLATBUFFERS_VERSION_MINOR == 3 &&
               FLATBUFFERS_VERSION_REVISION == 25,
              "Non-compatible flatbuffers version included");
-
+// 两个命名空间,对应namespace MyGame.Sample;
 namespace MyGame {
 namespace Sample {
 
@@ -23,7 +23,7 @@ struct MonsterBuilder;
 
 struct Weapon;
 struct WeaponBuilder;
-
+// 颜色枚举类型,对应enum Color:byte { Red = 0, Green, Blue = 2 }
 enum Color : int8_t {
   Color_Red = 0,
   Color_Green = 1,
@@ -56,14 +56,15 @@ inline const char *EnumNameColor(Color e) {
   const size_t index = static_cast<size_t>(e);
   return EnumNamesColor()[index];
 }
-
+// 装备枚举类型,对应union Equipment { Weapon }
 enum Equipment : uint8_t {
   Equipment_NONE = 0,
   Equipment_Weapon = 1,
   Equipment_MIN = Equipment_NONE,
   Equipment_MAX = Equipment_Weapon
 };
-
+// 这就是和函数,返回值是数组Equipment[2]
+// 获取装备枚举信息
 inline const Equipment (&EnumValuesEquipment())[2] {
   static const Equipment values[] = {
     Equipment_NONE,
@@ -71,7 +72,7 @@ inline const Equipment (&EnumValuesEquipment())[2] {
   };
   return values;
 }
-
+// 获取装备枚举名字str
 inline const char * const *EnumNamesEquipment() {
   static const char * const names[3] = {
     "NONE",
@@ -80,24 +81,24 @@ inline const char * const *EnumNamesEquipment() {
   };
   return names;
 }
-
+// 根据枚举名获取枚举名字str
 inline const char *EnumNameEquipment(Equipment e) {
   if (::flatbuffers::IsOutRange(e, Equipment_NONE, Equipment_Weapon)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesEquipment()[index];
 }
-
+// 默认
 template<typename T> struct EquipmentTraits {
   static const Equipment enum_value = Equipment_NONE;
 };
-
+// 特例武器模板
 template<> struct EquipmentTraits<MyGame::Sample::Weapon> {
   static const Equipment enum_value = Equipment_Weapon;
 };
 
 bool VerifyEquipment(::flatbuffers::Verifier &verifier, const void *obj, Equipment type);
 bool VerifyEquipmentVector(::flatbuffers::Verifier &verifier, const ::flatbuffers::Vector<::flatbuffers::Offset<void>> *values, const ::flatbuffers::Vector<uint8_t> *types);
-
+// 定义Vec3结构
 FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec3 FLATBUFFERS_FINAL_CLASS {
  private:
   float x_;
@@ -126,20 +127,20 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Vec3 FLATBUFFERS_FINAL_CLASS {
   }
 };
 FLATBUFFERS_STRUCT_END(Vec3, 12);
-
+// 定义Monster结构
 struct Monster FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef MonsterBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_POS = 4,
-    VT_MANA = 6,
-    VT_HP = 8,
-    VT_NAME = 10,
-    VT_INVENTORY = 14,
-    VT_COLOR = 16,
-    VT_WEAPONS = 18,
-    VT_EQUIPPED_TYPE = 20,
-    VT_EQUIPPED = 22,
-    VT_PATH = 24
+    VT_POS = 4,             // pos:Vec3;
+    VT_MANA = 6,            // mana:short = 150;
+    VT_HP = 8,              // hp:short = 100;
+    VT_NAME = 10,           // name:string;
+    VT_INVENTORY = 14,      // inventory:[ubyte];
+    VT_COLOR = 16,          // color:Color = Blue;
+    VT_WEAPONS = 18,        // weapons:[Weapon];
+    VT_EQUIPPED_TYPE = 20,  
+    VT_EQUIPPED = 22,       // equipped:Equipment;
+    VT_PATH = 24            // path:[Vec3];
   };
   const MyGame::Sample::Vec3 *pos() const {
     return GetStruct<const MyGame::Sample::Vec3 *>(VT_POS);
@@ -245,7 +246,7 @@ struct MonsterBuilder {
     return o;
   }
 };
-
+// 创建monster
 inline ::flatbuffers::Offset<Monster> CreateMonster(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     const MyGame::Sample::Vec3 *pos = nullptr,
@@ -271,7 +272,7 @@ inline ::flatbuffers::Offset<Monster> CreateMonster(
   builder_.add_color(color);
   return builder_.Finish();
 }
-
+// 创建monster
 inline ::flatbuffers::Offset<Monster> CreateMonsterDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     const MyGame::Sample::Vec3 *pos = nullptr,
@@ -305,8 +306,8 @@ inline ::flatbuffers::Offset<Monster> CreateMonsterDirect(
 struct Weapon FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef WeaponBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_NAME = 4,
-    VT_DAMAGE = 6
+    VT_NAME = 4,          // name:string;
+    VT_DAMAGE = 6         // damage:short;
   };
   const ::flatbuffers::String *name() const {
     return GetPointer<const ::flatbuffers::String *>(VT_NAME);
@@ -343,7 +344,7 @@ struct WeaponBuilder {
     return o;
   }
 };
-
+// 创建weapon
 inline ::flatbuffers::Offset<Weapon> CreateWeapon(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     ::flatbuffers::Offset<::flatbuffers::String> name = 0,
@@ -353,7 +354,7 @@ inline ::flatbuffers::Offset<Weapon> CreateWeapon(
   builder_.add_damage(damage);
   return builder_.Finish();
 }
-
+// 创建weapon
 inline ::flatbuffers::Offset<Weapon> CreateWeaponDirect(
     ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
@@ -389,7 +390,7 @@ inline bool VerifyEquipmentVector(::flatbuffers::Verifier &verifier, const ::fla
   }
   return true;
 }
-
+// 从二进制数据中生成monster
 inline const MyGame::Sample::Monster *GetMonster(const void *buf) {
   return ::flatbuffers::GetRoot<MyGame::Sample::Monster>(buf);
 }
