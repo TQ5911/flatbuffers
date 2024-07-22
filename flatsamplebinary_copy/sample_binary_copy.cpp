@@ -1,49 +1,37 @@
-/*
- * Copyright 2015 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ï»¿// flatsamplebinary_copy.cpp : æ­¤æ–‡ä»¶åŒ…å« "main" å‡½æ•°ã€‚ç¨‹åºæ‰§è¡Œå°†åœ¨æ­¤å¤„å¼€å§‹å¹¶ç»“æŸã€‚
+//
 
-#include "monster_generated.h"  // Already includes "flatbuffers/flatbuffers.h".
+#include <iostream>
+#include "monster_copy_generated.h"
 
 using namespace MyGame::Sample;
 
 // Example how to use FlatBuffers to create and read binary buffers.
 
 int main(int /*argc*/, const char * /*argv*/[]) {
-  // Í¨¹ıËã·¨½¨Á¢Ò»¸öĞòÁĞ»¯µÄ»º³åÇø:
+  // é€šè¿‡ç®—æ³•å»ºç«‹ä¸€ä¸ªåºåˆ—åŒ–çš„ç¼“å†²åŒº:
   flatbuffers::FlatBufferBuilder builder;
 
-  // Á¬ÔØÒ»Ğ©¹ÖÎïµÄÎäÆ÷:Ò»°Ñ¡°½£¡±ºÍÒ»°Ñ¡°¸«Í·¡±¡£
+  // è¿è½½ä¸€äº›æ€ªç‰©çš„æ­¦å™¨:ä¸€æŠŠâ€œå‰‘â€å’Œä¸€æŠŠâ€œæ–§å¤´â€ã€‚
   auto weapon_one_name = builder.CreateString("Sword");
-  // ¶¨ÒåÎäÆ÷ÉËº¦Îª3
+  // å®šä¹‰æ­¦å™¨ä¼¤å®³ä¸º3
   short weapon_one_damage = 3;
 
   auto weapon_two_name = builder.CreateString("Axe");
-  // ¶¨ÒåÎäÆ÷ÉËº¦Îª5
+  // å®šä¹‰æ­¦å™¨ä¼¤å®³ä¸º5
   short weapon_two_damage = 5;
 
-  // Ê¹ÓÃ¡°CreateWeapon¡±¿ì½İ·½Ê½´´½¨ËùÓĞ×Ö¶ÎÉèÖÃµÄÎäÆ÷
+  // ä½¿ç”¨â€œCreateWeaponâ€å¿«æ·æ–¹å¼åˆ›å»ºæ‰€æœ‰å­—æ®µè®¾ç½®çš„æ­¦å™¨
   auto sword = CreateWeapon(builder, weapon_one_name, weapon_one_damage);
   auto axe = CreateWeapon(builder, weapon_two_name, weapon_two_damage);
 
-  // ´Ó' std::vector '´´½¨Ò»¸öFlatBufferµÄ' vector 
+  // ä»' std::vector 'åˆ›å»ºä¸€ä¸ªFlatBufferçš„' vector
   std::vector<flatbuffers::Offset<Weapon>> weapons_vector;
   weapons_vector.push_back(sword);
   weapons_vector.push_back(axe);
   auto weapons = builder.CreateVector(weapons_vector);
 
-  // ĞòÁĞ»¯MonsterËùĞèµÄÆäËû¶ÔÏó
+  // åºåˆ—åŒ–Monsteræ‰€éœ€çš„å…¶ä»–å¯¹è±¡
   auto position = Vec3(1.0f, 2.0f, 3.0f);
 
   auto name = builder.CreateString("MyMonster");
@@ -51,39 +39,39 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   unsigned char inv_data[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   auto inventory = builder.CreateVector(inv_data, 10);
 
-  // ÉèÖÃËùÓĞ×Ö¶Î´´½¨¹ÖÎïµÄ¿ì½İ·½Ê½:
+  // è®¾ç½®æ‰€æœ‰å­—æ®µåˆ›å»ºæ€ªç‰©çš„å¿«æ·æ–¹å¼:
   auto orc = CreateMonster(builder, &position, 150, 80, name, inventory,
                            Color_Red, weapons, Equipment_Weapon, axe.Union());
 
-  builder.Finish(orc);  // ĞòÁĞ»¯¶ÔÏóµÄ¸ù
+  builder.Finish(orc);  // åºåˆ—åŒ–å¯¹è±¡çš„æ ¹
 
-  // ¿ÉÒÔ´æ´¢ÔÚ´ÅÅÌÉÏ»òÍ¨¹ıÍøÂç·¢ËÍ
+  // å¯ä»¥å­˜å‚¨åœ¨ç£ç›˜ä¸Šæˆ–é€šè¿‡ç½‘ç»œå‘é€
 
-  // »ñÈ¡builder.GetSize()×Ö½ÚµÄbuilder.GetBufferPointe
+  // è·å–builder.GetSize()å­—èŠ‚çš„builder.GetBufferPointe
 
-  // Ïà·´£¬ÎÒÃÇ½«Á¢¼´·ÃÎÊËü(¾ÍºÃÏñÎÒÃÇ¸Õ¸ÕÊÕµ½ËüÒ»Ñù)¡£
+  // ç›¸åï¼Œæˆ‘ä»¬å°†ç«‹å³è®¿é—®å®ƒ(å°±å¥½åƒæˆ‘ä»¬åˆšåˆšæ”¶åˆ°å®ƒä¸€æ ·)ã€‚
 
-  // »ñÈ¡¶Ô¸ùÄ¿Â¼µÄ·ÃÎÊÈ¨ÏŞ:
+  // è·å–å¯¹æ ¹ç›®å½•çš„è®¿é—®æƒé™:
   auto monster = GetMonster(builder.GetBufferPointer());
 
-  // ´ÓFlatBuffer»ñÈ¡²¢²âÊÔÒ»Ğ©±êÁ¿ÀàĞÍ¡£
+  // ä»FlatBufferè·å–å¹¶æµ‹è¯•ä¸€äº›æ ‡é‡ç±»å‹ã€‚
   assert(monster->hp() == 80);
   assert(monster->mana() == 150);  // default
   assert(monster->name()->str() == "MyMonster");
 
-  // »ñÈ¡²¢²âÊÔFlatBuffer' struct 'µÄ×Ö¶Î
+  // è·å–å¹¶æµ‹è¯•FlatBuffer' struct 'çš„å­—æ®µ
   auto pos = monster->pos();
   assert(pos);
   assert(pos->z() == 3.0f);
   (void)pos;
 
-  // ´Ó¡°¿â´æ¡±FlatBufferµÄ¡°ÏòÁ¿¡±ÖĞ»ñµÃÒ»¸öÔªËØ²âÊÔ
+  // ä»â€œåº“å­˜â€FlatBufferçš„â€œå‘é‡â€ä¸­è·å¾—ä¸€ä¸ªå…ƒç´ æµ‹è¯•
   auto inv = monster->inventory();
   assert(inv);
   assert(inv->Get(9) == 9);
   (void)inv;
 
-  // »ñÈ¡²¢²âÊÔ¡°ÎäÆ÷¡±FlatBuffersµÄ¡°Ê¸Á¿¡±
+  // è·å–å¹¶æµ‹è¯•â€œæ­¦å™¨â€FlatBuffersçš„â€œçŸ¢é‡â€
   std::string expected_weapon_names[] = { "Sword", "Axe" };
   short expected_weapon_damages[] = { 3, 5 };
   auto weps = monster->weapons();
@@ -94,7 +82,7 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   (void)expected_weapon_names;
   (void)expected_weapon_damages;
 
-  // »ñÈ¡²¢²âÊÔ¡°Éè±¸¡±½ÓÍ·(¡°×°±¸¡±×Ö¶Î)
+  // è·å–å¹¶æµ‹è¯•â€œè®¾å¤‡â€æ¥å¤´(â€œè£…å¤‡â€å­—æ®µ)
   assert(monster->equipped_type() == Equipment_Weapon);
   auto equipped = static_cast<const Weapon *>(monster->equipped());
   assert(equipped->name()->str() == "Axe");
