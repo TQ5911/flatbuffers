@@ -66,6 +66,7 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   // 相反，我们将立即访问它(就好像我们刚刚收到它一样)。
 
   // 获取对根目录的访问权限:
+  int size = builder.GetSize();
   auto monster = GetMonster(builder.GetBufferPointer());
 
   // 从FlatBuffer获取并测试一些标量类型。
@@ -109,7 +110,7 @@ int main(int /*argc*/, const char * /*argv*/[]) {
   // 保存到本地
   {
     std::string binaryData((char*)builder.GetBufferPointer(), builder.GetSize());
-    std::ofstream outFile("output1111111.mon");
+    std::ofstream outFile("output1111111.mon", std::ios::binary);
 
     // 检查文件是否成功打开
     if (!outFile.is_open()) {
@@ -136,9 +137,8 @@ int main(int /*argc*/, const char * /*argv*/[]) {
     auto monster = GetMonster(binaryData);
 
     std::cout << "hp : " << monster->hp() << std::endl;  // '80'
-    std::cout << "mana : " << monster->mana()
-              << std::endl;  // default value of '150'
-    std::cout << "name : " << monster->name()->c_str()
-              << std::endl;  // "MyMonster"
+    std::cout << "mana : " << monster->mana() << std::endl;  // default value of '150'
+    std::string s = monster->name()->str();
+    std::cout << "name : " << monster->name()->str() << std::endl;  // "MyMonster"
   }
 }
