@@ -20,27 +20,28 @@
 
 using namespace MyGame::Sample;
 
-// This is an example of parsing text straight into a buffer and then
-// generating flatbuffer (JSON) text from the buffer.
+// 这是一个将json文本直接解析到缓冲区，然后从缓冲区生成flatbuffer (JSON)文本的示例。
 int main(int /*argc*/, const char * /*argv*/[]) {
-  // load FlatBuffer schema (.fbs) and JSON from disk
   std::string schemafile;
   std::string jsonfile;
+  // 加载 FlatBuffer schema (.fbs),读取文件内容
   bool ok = flatbuffers::LoadFile("E:\\Study\\flatbuffers\\build\\Debug\\monster_copy.fbs", false, &schemafile) &&
+  // 再加载json文本,相当于读取数据
             flatbuffers::LoadFile("E:\\Study\\flatbuffers\\build\\Debug\\monsterdata.json", false, &jsonfile);
   if (!ok) {
     printf("couldn't load files!\n");
     return 1;
   }
 
-  // parse schema first, so we can use it to parse the data after
+  // 先解析模式,这个相当于是通过解析.fbs的内容,找到对应的已经定义的结构monster,然后缓冲区中创建该对象
+  // 然后用它来解析数据,填充到缓冲区对象中
   flatbuffers::Parser parser;
-  const char *include_directories[] = { "samples", nullptr };
-  ok = parser.Parse(schemafile.c_str(), include_directories) &&
-       parser.Parse(jsonfile.c_str(), include_directories);
+  //const char *include_directories[] = { nullptr, nullptr };
+  ok = parser.Parse(schemafile.c_str()/*, include_directories*/) &&
+       parser.Parse(jsonfile.c_str()/*, include_directories*/);
   assert(ok);
 
-  // here, parser.builder_ contains a binary buffer that is the parsed data.
+  // builder_包含一个二进制缓冲区，它是解析后的数据。
 
   // to ensure it is correct, we now generate text back from the binary,
   // and compare the two:

@@ -20,18 +20,17 @@
 
 using namespace MyGame::Sample;
 
-// This is an example of parsing text straight into a buffer and then
-// generating flatbuffer (JSON) text from the buffer.
+// 这是一个将文本直接解析到缓冲区，然后从缓冲区生成flatbuffer (JSON)文本的示例
 int main(int /*argc*/, const char * /*argv*/[]) {
   // load FlatBuffer schema (.fbs) and JSON from disk
   std::string schema_file;
   std::string json_file;
   std::string bfbs_file;
   bool ok =
-      flatbuffers::LoadFile("tests/monster_test.fbs", false, &schema_file) &&
-      flatbuffers::LoadFile("tests/monsterdata_test.golden", false,
+      flatbuffers::LoadFile("monster_test.fbs", false, &schema_file) &&
+      flatbuffers::LoadFile("monsterdata_test.golden", false,
                             &json_file) &&
-      flatbuffers::LoadFile("tests/monster_test.bfbs", true, &bfbs_file);
+      flatbuffers::LoadFile("monster_test.bfbs", true, &bfbs_file);
   if (!ok) {
     printf("couldn't load files!\n");
     return 1;
